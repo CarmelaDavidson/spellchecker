@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A spellchecker maintains an efficient representation of a dictionary for
@@ -24,9 +25,25 @@ public class SpellChecker {
         return new SpellChecker(Files.readAllLines(Paths.get(filename)));
     }
 
+    private class NodeChar {
+        public char character;
+        public boolean isEnd;
+
+        public NodeChar(char character, boolean isEnd) {
+            this.character = character;
+            this.isEnd = isEnd;
+        }
+    }
+
     /** A Node of the SpellChecker structure. */
     private class Node {
-        // TODO: implement me!
+        public ArrayList<NodeChar> characters;
+        public Node next;
+
+        public Node(ArrayList<NodeChar> characters, Node next) {
+            this.characters = characters;
+            this.next = next;
+        }
     }
 
     /** The root of the SpellChecker */
@@ -36,9 +53,37 @@ public class SpellChecker {
         // TODO: implement me!
     }
 
-    public void add(String word) {
-        // TODO: implement me!
+    public void addHelper(char[] wordList, Node node) {
+        for (int i = 0; i < wordList.length; i++) {
+            for (int j = 0; j < node.characters.size(); j++) {
+                NodeChar temp = node.characters.get(j);
+                if (!((temp.character) == (wordList[i]))) {
+                    boolean isEnd = (i == wordList.length - 1);
+                    node.characters.add(new NodeChar(wordList[i], isEnd));
+                } else{
+                    boolean isEnd = (i == wordList.length - 1);
+                    temp.isEnd = isEnd;
+                }
+                if(node.next != null){
+                    addHelper(wordList, node.next); 
+                }else{
+                    node.next = new Node(new ArrayList<NodeChar>(), null);
+                }
+            }
+        }
     }
+
+    public void add(String word) {
+        char[] wordList = word.toCharArray();
+        // for (int i = 0; i < wordList.length; i++) {
+        //     for (int j = 0; j < root.characters.size(); j++) {
+        //         if (!root.characters.get(j).equals(wordList[i])) {
+        //             root.characters.add(new NodeChar(wordList[i], false));
+        //         }
+        //     }
+        // }
+    }
+
 
     public boolean isWord(String word) {
         // TODO: implement me!
